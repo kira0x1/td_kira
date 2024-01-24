@@ -6,38 +6,83 @@ namespace Kira
 {
     public class LevelManager : MonoBehaviour
     {
+        public int enemiesAlive;
+
         [SerializeField] private LevelSettings levelSettings;
         [SerializeField] private SplineContainer splineContainer;
         [SerializeField] private Enemy enemyPrefab;
-        private Spline spline;
-        private Vector3 startPosition;
+
+        [SerializeField]
+        private int curRound;
+        [SerializeField]
+        private int endRound;
+
+        private int enemiesToSpawn;
+        private int totalEnemiesSpawned;
 
         private void Start()
         {
-            spline = splineContainer.Spline;
-            startPosition = spline[0].Position;
+            endRound = levelSettings.rounds.Count;
 
-            if (levelSettings.rounds.Count > 0)
+            if (endRound > 0)
             {
-                StartCoroutine(StartRound(levelSettings.rounds[0]));
+                StartCoroutine(StartRound(0));
             }
         }
 
-        private IEnumerator StartRound(RoundSetting round)
+        private IEnumerator StartRound(int roundIndex, bool startWithDelay = false)
         {
+            RoundSetting round = levelSettings.rounds[roundIndex];
+            enemiesToSpawn = round.spawnAmount;
+
+            if (startWithDelay)
+            {
+                yield return new WaitForSeconds(levelSettings.roundDelay);
+            }
+
             int enemiesSpawned = 0;
 
             while (enemiesSpawned < round.spawnAmount)
             {
                 enemiesSpawned++;
+                SpawnEnemy();
                 yield return new WaitForSeconds(round.spawnRate);
             }
+
+
+            while (enemiesToSpawn > 0 && enemiesAlive > 0)
+            {
+                yield return null;
+            }
+
+            HandleRoundEnd();
         }
 
-        public void SpawnEnemy()
+        private void SpawnEnemy()
         {
-            Enemy enemy = Instantiate(enemyPrefab, startPosition, Quaternion.identity);
+            Enemy enemy = Instantiate(enemyPrefab);
+            totalEnemiesSpawned++;
+            enemiesAlive++;
+            enemy.OnEnemyDone += OnEnemyDone;
             enemy.Init(splineContainer);
+        }
+
+        private void OnEnemyDone(Enemy enemy, bool playerDestroyed)
+        {
+            if (!playerDestroyed) levelSettings.health--;
+            enemiesAlive--;
+            enemy.OnEnemyDone -= OnEnemyDone;
+        }
+
+        private void HandleRoundEnd()
+        {
+            if (curRound + 1 >= endRound)
+            {
+                return;
+            }
+
+            curRound++;
+            StartCoroutine(StartRound(curRound, true));
         }
     }
 }

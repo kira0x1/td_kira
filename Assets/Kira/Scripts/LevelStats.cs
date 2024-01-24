@@ -1,16 +1,13 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Kira
 {
-    public class LevelStats : MonoBehaviour
-    {
-        public int Health = 100;
-    }
-
-    [System.Serializable]
+    [Serializable]
     public class LevelSettings
     {
+        public int health = 100;
+
         // Time until next round starts
         public float roundDelay = 2.5f;
 
@@ -18,13 +15,13 @@ namespace Kira
         public int RoundsCount => rounds.Count;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct RoundStat
     {
         public int healthLost;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class RoundSetting
     {
         public float spawnRate = 2f;
