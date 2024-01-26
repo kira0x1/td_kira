@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -8,7 +9,7 @@ namespace Kira
     {
         public int enemiesAlive;
 
-        [SerializeField] private LevelSettings levelSettings;
+        public LevelSettings levelSettings;
         [SerializeField] private SplineContainer splineContainer;
         [SerializeField] private Enemy enemyPrefab;
 
@@ -16,8 +17,9 @@ namespace Kira
         private int curRound;
         [SerializeField]
         private int endRound;
-
         private int enemiesToSpawn;
+
+        public Action<int, int> OnHealthChanged;
 
         private void Start()
         {
@@ -68,9 +70,19 @@ namespace Kira
 
         private void OnEnemyDone(Enemy enemy, bool playerDestroyed)
         {
-            if (!playerDestroyed) levelSettings.health--;
+            if (!playerDestroyed)
+            {
+                RemoveHealth(1);
+            }
+
             enemiesAlive--;
             enemy.OnEnemyDone -= OnEnemyDone;
+        }
+
+        private void RemoveHealth(int damage)
+        {
+            levelSettings.health -= damage;
+            OnHealthChanged?.Invoke(damage, levelSettings.health);
         }
 
         private void HandleRoundEnd()

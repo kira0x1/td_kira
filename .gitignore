@@ -1,4 +1,6 @@
 .idea/
+Assets/Thirdparty
+Assets/Thirdparty.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #

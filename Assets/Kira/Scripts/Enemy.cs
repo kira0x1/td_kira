@@ -11,13 +11,18 @@ namespace Kira
         public int health = 1;
 
         [SerializeField] private SplineAnimate splineAnimate;
+        [SerializeField] private Transform pivot;
         [SerializeField] private GameObject enemyModel;
 
         private bool hasStarted;
         public event Action<Enemy, bool> OnEnemyDone;
+        public Transform Pivot => pivot;
+        private Guid uuid;
+        public Guid UUID => uuid;
 
         public void Init(SplineContainer splineContainer)
         {
+            uuid = Guid.NewGuid();
             splineAnimate.Container = splineContainer;
             splineAnimate.Updated += OnUpdated;
             StartCoroutine(PlayWhenReady());

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53bc3d7f0c24d649987470a5f95dfd1, type: 3}
   m_Name: Basic Tower
   m_EditorClassIdentifier: 
-  attackSpeed: 0.25
+  attackSpeed: 1
   attackDamage: 1

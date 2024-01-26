@@ -27,13 +27,12 @@ namespace Kira
             if (!hasTarget || hasHit) return;
 
             Vector3 projPos = projectileTransform.position;
-            Vector3 targetPos = target.transform.position;
-
+            Vector3 targetPos = target.Pivot.position;
 
             projectileTransform.position = Vector3.MoveTowards(projPos, targetPos, speed);
 
             float distance = Vector3.Distance(projPos, targetPos);
-            if (distance <= 0.5f)
+            if (distance <= 1f)
             {
                 OnHit();
             }

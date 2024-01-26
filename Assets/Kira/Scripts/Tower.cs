@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,14 +12,20 @@ namespace Kira
         public Projectile projectilePrefab;
 
         [SerializeField] private Transform aimTransform;
-        [FormerlySerializedAs("projectileSpawn"), SerializeField] private Transform projectileSpawnTransform;
+        [SerializeField] private Transform projectileSpawnTransform;
         [SerializeField] private SphereCollider triggerCollider;
 
         private Enemy enemyTarget;
+        private Transform enemyPivot;
         private bool hasTarget;
-        private readonly List<Enemy> enemiesInRange = new List<Enemy>();
-
+        private readonly Dictionary<Guid, Enemy> enemiesInRange = new Dictionary<Guid, Enemy>();
         private float nextAttackTime;
+        private Vector3 defaultAimPos;
+
+        private void Start()
+        {
+            defaultAimPos = aimTransform.position;
+        }
 
         private void Update()
         {
@@ -33,11 +41,19 @@ namespace Kira
             float distance = Vector3.Distance(transform.position, enemyTarget.transform.position);
             if (distance > triggerCollider.radius) return;
 
-            Vector3 lookAtPos = enemyTarget.transform.position;
-            lookAtPos.y = aimTransform.position.y;
-            aimTransform.LookAt(lookAtPos);
-
+            HandleAiming();
             HandleShooting();
+        }
+
+        private void HandleAiming()
+        {
+            Vector3 aimPos = aimTransform.position;
+            Vector3 enemyPos = enemyPivot.position;
+            enemyPos.y = aimPos.y;
+
+            Vector3 lookDir = enemyPos - aimPos;
+            Quaternion lookRot = Quaternion.LookRotation(lookDir);
+            aimTransform.rotation = lookRot;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -45,11 +61,12 @@ namespace Kira
             if (other.CompareTag("Enemy"))
             {
                 Enemy enemy = other.GetComponent<Enemy>();
-                enemiesInRange.Add(enemy);
+                enemiesInRange.Add(enemy.UUID, enemy);
 
                 if (!hasTarget)
                 {
                     enemyTarget = enemy;
+                    enemyPivot = enemyTarget.transform;
                     hasTarget = true;
                 }
             }
@@ -66,15 +83,18 @@ namespace Kira
 
         private void RemoveEnemy(Enemy enemy)
         {
-            enemiesInRange.Remove(enemy);
+            enemiesInRange.Remove(enemy.UUID);
 
             if (enemiesInRange.Count > 0)
             {
-                enemyTarget = enemiesInRange[0];
+                enemyTarget = enemiesInRange.First().Value;
+                enemyPivot = enemyTarget.Pivot;
                 hasTarget = true;
             }
             else
             {
+                aimTransform.position = defaultAimPos;
+                aimTransform.localRotation = Quaternion.Euler(Vector3.zero);
                 hasTarget = false;
             }
         }
