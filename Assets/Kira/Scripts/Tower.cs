@@ -7,12 +7,11 @@ namespace Kira
     {
         [SerializeField] private Transform aimTransform;
         [SerializeField] private SphereCollider triggerCollider;
+        public TowerData towerData;
 
         private Enemy enemyTargeting;
         private bool hasTarget;
-
-
-        private List<Enemy> enemiesInRange = new List<Enemy>();
+        private readonly List<Enemy> enemiesInRange = new List<Enemy>();
 
         private void Update()
         {
