@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-namespace Kira.Kira.Scripts
+namespace Kira
 {
-    [CreateAssetMenu(fileName = "New TowerData", menuName = "Kira/Tower", order = 0)]
+    [CreateAssetMenu(fileName = "New TowerData", menuName = "Kira/Tower")]
     public class TowerData : ScriptableObject
     {
+        public float attackSpeed = 0.25f;
+        public int attackDamage = 1;
     }
 }

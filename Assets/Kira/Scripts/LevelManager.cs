@@ -18,7 +18,6 @@ namespace Kira
         private int endRound;
 
         private int enemiesToSpawn;
-        private int totalEnemiesSpawned;
 
         private void Start()
         {
@@ -32,6 +31,7 @@ namespace Kira
 
         private IEnumerator StartRound(int roundIndex, bool startWithDelay = false)
         {
+            Debug.Log($"Starting round: {roundIndex}");
             RoundSetting round = levelSettings.rounds[roundIndex];
             enemiesToSpawn = round.spawnAmount;
 
@@ -61,7 +61,6 @@ namespace Kira
         private void SpawnEnemy()
         {
             Enemy enemy = Instantiate(enemyPrefab);
-            totalEnemiesSpawned++;
             enemiesAlive++;
             enemy.OnEnemyDone += OnEnemyDone;
             enemy.Init(splineContainer);

@@ -7,6 +7,9 @@ namespace Kira
 {
     public class Enemy : MonoBehaviour
     {
+        public bool isDead;
+        public int health = 1;
+
         [SerializeField] private SplineAnimate splineAnimate;
         [SerializeField] private GameObject enemyModel;
 
@@ -37,6 +40,25 @@ namespace Kira
             splineAnimate.Play();
             enemyModel.SetActive(true);
             hasStarted = true;
+        }
+
+        public void Hit(int damage)
+        {
+            if (isDead) return;
+            health -= damage;
+            if (health <= 0)
+            {
+                health = 0;
+                isDead = true;
+                OnDeath();
+            }
+        }
+
+        private void OnDeath()
+        {
+            splineAnimate.Pause();
+            OnEnemyDone?.Invoke(this, true);
+            Destroy(gameObject);
         }
     }
 }
