@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Kira
 {
@@ -15,6 +14,9 @@ namespace Kira
         private bool m_IsPlacerEnabled;
         private Camera m_Cam;
         private Transform m_CachedTransform;
+        private LevelManager m_LevelManager;
+        private Vector3 m_HitPos;
+        private TowerData m_TowerPlacing;
 
         private enum PlacerState
         {
@@ -27,6 +29,7 @@ namespace Kira
 
         private void Start()
         {
+            m_LevelManager = FindFirstObjectByType<LevelManager>();
             m_CachedTransform = transform;
             m_Cam = Camera.main;
             m_PlacerRenderer = m_PlacerGraphic.GetComponent<Renderer>();
@@ -45,13 +48,15 @@ namespace Kira
             if (placerState == PlacerState.PLACEABLE)
             {
                 //TODO place tower
+                m_LevelManager.SpawnTower(m_TowerPlacing, m_HitPos);
             }
 
             DisablePlacer();
         }
 
-        public void EnablePlacer()
+        public void EnablePlacer(TowerData tower)
         {
+            m_TowerPlacing = tower;
             m_IsPlacerEnabled = true;
             m_PlacerGraphic.SetActive(true);
             HandlePlacerPos();
@@ -78,7 +83,8 @@ namespace Kira
                     SwitchPlacerState(PlacerState.ERRORED);
                 }
 
-                m_CachedTransform.position = hit.point;
+                m_HitPos = hit.point;
+                m_CachedTransform.position = m_HitPos;
             }
             else
             {

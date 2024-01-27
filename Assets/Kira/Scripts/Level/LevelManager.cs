@@ -1,5 +1,5 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -20,6 +20,7 @@ namespace Kira
         private int m_CurRound;
         private int m_RoundsLength;
         private int m_EnemiesToSpawn;
+        private List<Tower> towersSpawned = new List<Tower>();
 
         private void Awake()
         {
@@ -98,6 +99,13 @@ namespace Kira
         private void RemoveHealth(int damage)
         {
             levelStats.RemoveHealth(damage);
+        }
+
+        public void SpawnTower(TowerData towerData, Vector3 spawnPos)
+        {
+            Tower tower = Instantiate(towerData.towerPrefab, spawnPos, Quaternion.identity);
+            towersSpawned.Add(tower);
+            levelStats.SpendGems(towerData.cost);
         }
 
         private void HandleRoundEnd()

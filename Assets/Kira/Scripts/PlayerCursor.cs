@@ -4,9 +4,14 @@ namespace Kira
 {
     public class PlayerCursor : MonoBehaviour
     {
-        private Camera m_Cam;
-        [SerializeField] private LayerMask towerLayer;
+        [SerializeField]
+        private LayerMask towerLayer;
+
+        private LevelManager levelManager;
         private TowerPlacer towerPlacer;
+        private Camera m_Cam;
+
+        private PlayerState playerState;
 
         private enum PlayerState
         {
@@ -15,12 +20,11 @@ namespace Kira
             GAME_OVER
         }
 
-        private PlayerState playerState;
-        private TowerData towerPlacing;
 
         private void Awake()
         {
             m_Cam = Camera.main;
+            levelManager = FindFirstObjectByType<LevelManager>();
             towerPlacer = FindFirstObjectByType<TowerPlacer>();
         }
 
@@ -44,11 +48,12 @@ namespace Kira
 
         private void OnTowerSlotClicked(TowerData tower)
         {
+            if (levelManager.levelStats.Gems < tower.cost) return;
+
             if (playerState == PlayerState.NORMAL)
             {
-                towerPlacing = tower;
                 playerState = PlayerState.PLACING_TOWER;
-                towerPlacer.EnablePlacer();
+                towerPlacer.EnablePlacer(tower);
             }
         }
 

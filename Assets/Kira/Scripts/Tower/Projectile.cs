@@ -52,8 +52,15 @@ namespace Kira
         public void SetTarget(Enemy target)
         {
             this.target = target;
+            target.OnEnemyDone += OnEnemyDead;
             projectileGraphic.SetActive(true);
             hasTarget = true;
+        }
+
+        private void OnEnemyDead(Enemy enemy, bool playerKilled)
+        {
+            hasTarget = false;
+            Destroy(gameObject);
         }
     }
 }

@@ -28,6 +28,12 @@ namespace Kira
             OnGemsChanged?.Invoke(amount, m_CurGems);
         }
 
+        public void SpendGems(int amount)
+        {
+            Gems -= amount;
+            OnGemsChanged?.Invoke(-amount, m_CurGems);
+        }
+
         public void RemoveHealth(int removeAmount)
         {
             Health -= removeAmount;
