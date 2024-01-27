@@ -1,0 +1,5 @@
+﻿- Augments
+   Upgrade towers by elemental augments
+   - Frost: slows enemies
+   - Fire: DOT layer removable
+   - Lightning: aoe type ? 
