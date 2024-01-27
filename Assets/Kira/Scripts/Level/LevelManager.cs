@@ -8,34 +8,46 @@ namespace Kira
     public class LevelManager : MonoBehaviour
     {
         public int enemiesAlive;
-
         public LevelSettings levelSettings;
-        [SerializeField] private SplineContainer splineContainer;
-        [SerializeField] private Enemy enemyPrefab;
+        public LevelStats levelStats;
 
         [SerializeField]
-        private int curRound;
-        [SerializeField]
-        private int endRound;
-        private int enemiesToSpawn;
+        private SplineContainer m_SplineContainer;
 
-        public Action<int, int> OnHealthChanged;
+        [SerializeField]
+        private Enemy m_EnemyPrefab;
+
+        private int m_CurRound;
+        private int m_RoundsLength;
+        private int m_EnemiesToSpawn;
+
+        private void Awake()
+        {
+            // TODO: change when loading manager and stage selector added
+            InitalizeLevel();
+        }
 
         private void Start()
         {
-            endRound = levelSettings.rounds.Count;
+            m_RoundsLength = levelSettings.rounds.Count;
 
-            if (endRound > 0)
+            if (m_RoundsLength > 0)
             {
                 StartCoroutine(StartRound(0));
             }
+        }
+
+        // Loads the level and all dependencies, should be called when loading from main menu
+        public void InitalizeLevel()
+        {
+            levelStats = new LevelStats(levelSettings.startHealth, levelSettings.startGems);
         }
 
         private IEnumerator StartRound(int roundIndex, bool startWithDelay = false)
         {
             Debug.Log($"Starting round: {roundIndex}");
             RoundSetting round = levelSettings.rounds[roundIndex];
-            enemiesToSpawn = round.spawnAmount;
+            m_EnemiesToSpawn = round.spawnAmount;
 
             if (startWithDelay)
             {
@@ -52,7 +64,7 @@ namespace Kira
             }
 
 
-            while (enemiesToSpawn > 0 && enemiesAlive > 0)
+            while (m_EnemiesToSpawn > 0 && enemiesAlive > 0)
             {
                 yield return null;
             }
@@ -62,10 +74,10 @@ namespace Kira
 
         private void SpawnEnemy()
         {
-            Enemy enemy = Instantiate(enemyPrefab);
+            Enemy enemy = Instantiate(m_EnemyPrefab);
             enemiesAlive++;
             enemy.OnEnemyDone += OnEnemyDone;
-            enemy.Init(splineContainer);
+            enemy.Init(m_SplineContainer);
         }
 
         private void OnEnemyDone(Enemy enemy, bool playerDestroyed)
@@ -74,6 +86,10 @@ namespace Kira
             {
                 RemoveHealth(1);
             }
+            else
+            {
+                levelStats.AddGems(1);
+            }
 
             enemiesAlive--;
             enemy.OnEnemyDone -= OnEnemyDone;
@@ -81,19 +97,19 @@ namespace Kira
 
         private void RemoveHealth(int damage)
         {
-            levelSettings.health -= damage;
-            OnHealthChanged?.Invoke(damage, levelSettings.health);
+            levelStats.RemoveHealth(damage);
         }
 
         private void HandleRoundEnd()
         {
-            if (curRound + 1 >= endRound)
+            if (m_CurRound + 1 >= m_RoundsLength)
             {
                 return;
             }
 
-            curRound++;
-            StartCoroutine(StartRound(curRound, true));
+            m_CurRound++;
+            levelStats.AddGems(levelSettings.baseRoundIncome);
+            StartCoroutine(StartRound(m_CurRound, true));
         }
     }
 }

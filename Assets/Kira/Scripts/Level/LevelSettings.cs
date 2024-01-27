@@ -6,7 +6,9 @@ namespace Kira
     [Serializable]
     public class LevelSettings
     {
-        public int health = 100;
+        public int startHealth = 50;
+        public int startGems = 650;
+        public int baseRoundIncome = 50;
 
         // Time until next round starts
         public float roundDelay = 2.5f;

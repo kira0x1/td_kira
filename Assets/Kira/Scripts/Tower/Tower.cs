@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Kira
 {
@@ -14,6 +13,7 @@ namespace Kira
         [SerializeField] private Transform aimTransform;
         [SerializeField] private Transform projectileSpawnTransform;
         [SerializeField] private SphereCollider triggerCollider;
+        [SerializeField] private TowerTrigger towerTrigger;
 
         private Enemy enemyTarget;
         private Transform enemyPivot;
@@ -25,6 +25,24 @@ namespace Kira
         private void Start()
         {
             defaultAimPos = aimTransform.position;
+        }
+
+        private void OnEnable()
+        {
+            if (towerTrigger != null)
+            {
+                towerTrigger.OnEnemyEnterTrigger += OnEnemeyEnterTrigger;
+                towerTrigger.OnEnemyExitTrigger += OnEnemyExitTrigger;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (towerTrigger != null)
+            {
+                towerTrigger.OnEnemyEnterTrigger -= OnEnemeyEnterTrigger;
+                towerTrigger.OnEnemyExitTrigger -= OnEnemyExitTrigger;
+            }
         }
 
         private void Update()
@@ -56,30 +74,23 @@ namespace Kira
             aimTransform.rotation = lookRot;
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnEnemeyEnterTrigger(Enemy enemy)
         {
-            if (other.CompareTag("Enemy"))
-            {
-                Enemy enemy = other.GetComponent<Enemy>();
-                enemiesInRange.Add(enemy.UUID, enemy);
+            enemiesInRange.Add(enemy.UUID, enemy);
 
-                if (!hasTarget)
-                {
-                    enemyTarget = enemy;
-                    enemyPivot = enemyTarget.transform;
-                    hasTarget = true;
-                }
+            if (!hasTarget)
+            {
+                enemyTarget = enemy;
+                enemyPivot = enemyTarget.transform;
+                hasTarget = true;
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnEnemyExitTrigger(Enemy enemy)
         {
-            if (other.CompareTag("Enemy"))
-            {
-                Enemy enemy = other.GetComponent<Enemy>();
-                RemoveEnemy(enemy);
-            }
+            RemoveEnemy(enemy);
         }
+
 
         private void RemoveEnemy(Enemy enemy)
         {

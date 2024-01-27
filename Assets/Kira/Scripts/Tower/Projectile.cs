@@ -29,7 +29,7 @@ namespace Kira
             Vector3 projPos = projectileTransform.position;
             Vector3 targetPos = target.Pivot.position;
 
-            projectileTransform.position = Vector3.MoveTowards(projPos, targetPos, speed);
+            projectileTransform.position = Vector3.MoveTowards(projPos, targetPos, speed * Time.deltaTime);
 
             float distance = Vector3.Distance(projPos, targetPos);
             if (distance <= 1f)
