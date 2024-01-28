@@ -5,6 +5,7 @@ using UnityEditor.Splines;
 
 using System;
 using System.Collections.Generic;
+using Kira;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;

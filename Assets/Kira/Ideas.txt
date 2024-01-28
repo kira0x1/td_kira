@@ -3,3 +3,9 @@
    - Frost: slows enemies
    - Fire: DOT layer removable
    - Lightning: aoe type ? 
+   
+
+- Rogue like element
+    - enemies drop ?
+    - round end ?
+    - road / path level system like slay of the spire ?
