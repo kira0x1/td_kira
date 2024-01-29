@@ -22,26 +22,39 @@ namespace Kira
         private int m_EnemiesToSpawn;
         private List<Tower> towersSpawned = new List<Tower>();
 
+        public enum LevelState
+        {
+            PRE_START,
+            PLAYING,
+            PAUSED,
+            LEVEL_END
+        }
+
+        private static LevelState m_LevelState;
+        public static LevelState CurrentState => m_LevelState;
+
         private void Awake()
         {
             // TODO: change when loading manager and stage selector added
             InitalizeLevel();
         }
 
-        private void Start()
+        // Loads the level and all dependencies, should be called when loading from main menu
+        private void InitalizeLevel()
+        {
+            m_LevelState = LevelState.PRE_START;
+            levelStats = new LevelStats(levelSettings.startHealth, levelSettings.startGems);
+        }
+
+        public void StartLevel()
         {
             m_RoundsLength = levelSettings.rounds.Count;
 
             if (m_RoundsLength > 0)
             {
                 StartCoroutine(StartRound(0));
+                m_LevelState = LevelState.PLAYING;
             }
-        }
-
-        // Loads the level and all dependencies, should be called when loading from main menu
-        public void InitalizeLevel()
-        {
-            levelStats = new LevelStats(levelSettings.startHealth, levelSettings.startGems);
         }
 
         private IEnumerator StartRound(int roundIndex, bool startWithDelay = false)

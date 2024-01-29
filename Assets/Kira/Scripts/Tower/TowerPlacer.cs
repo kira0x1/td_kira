@@ -62,7 +62,7 @@ namespace Kira
             HandlePlacerPos();
         }
 
-        public void DisablePlacer()
+        private void DisablePlacer()
         {
             m_IsPlacerEnabled = false;
             m_PlacerGraphic.SetActive(false);

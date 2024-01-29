@@ -10,6 +10,8 @@ namespace Kira
         private TextMeshProUGUI healthText;
         [SerializeField]
         private TextMeshProUGUI gemsText;
+        [SerializeField]
+        private PanelUI startBtnPanel;
 
         private LevelManager levelManager;
 
@@ -31,6 +33,12 @@ namespace Kira
         private void OnGemsChanged(int amount, int curGems)
         {
             gemsText.text = curGems.ToString();
+        }
+
+        public void OnStartGameClicked()
+        {
+            levelManager.StartLevel();
+            startBtnPanel.HidePanel();
         }
     }
 }
