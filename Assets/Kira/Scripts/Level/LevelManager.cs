@@ -17,7 +17,6 @@ namespace Kira
         [SerializeField]
         private Enemy m_EnemyPrefab;
 
-        private int m_CurRound;
         private int m_RoundsLength;
         private int m_EnemiesToSpawn;
         private List<Tower> towersSpawned = new List<Tower>();
@@ -123,14 +122,15 @@ namespace Kira
 
         private void HandleRoundEnd()
         {
-            if (m_CurRound + 1 >= m_RoundsLength)
+            if (levelStats.Round + 1 >= m_RoundsLength)
             {
                 return;
             }
 
-            m_CurRound++;
+
+            levelStats.NextRound();
             levelStats.AddGems(levelSettings.baseRoundIncome);
-            StartCoroutine(StartRound(m_CurRound, true));
+            StartCoroutine(StartRound(levelStats.Round, true));
         }
     }
 }

@@ -6,9 +6,24 @@ namespace Kira
     {
         private int m_CurHealth;
         private int m_CurGems;
+        private int m_CurRound;
 
         public Action<int, int> OnGemsChanged;
         public Action<int, int> OnHealthChanged;
+        public Action<int> OnRoundCompleted;
+
+        public LevelStats(int startHealth, int startGems)
+        {
+            m_CurHealth = startHealth;
+            m_CurGems = startGems;
+            m_CurRound = 0;
+        }
+
+        public int Round
+        {
+            get => m_CurRound;
+            private set => m_CurRound = value;
+        }
 
         public int Health
         {
@@ -40,10 +55,10 @@ namespace Kira
             OnHealthChanged?.Invoke(removeAmount, m_CurHealth);
         }
 
-        public LevelStats(int startHealth, int startGems)
+        public void NextRound()
         {
-            m_CurHealth = startHealth;
-            m_CurGems = startGems;
+            Round++;
+            OnRoundCompleted?.Invoke(Round);
         }
     }
 }

@@ -6,10 +6,12 @@ namespace Kira
     public class PanelUI : MonoBehaviour
     {
         private CanvasGroup m_CanvasGroup;
+        private bool m_IsEnabled;
 
         private void Awake()
         {
             m_CanvasGroup = GetComponent<CanvasGroup>();
+            m_IsEnabled = m_CanvasGroup.alpha == 0f;
         }
 
         public void ShowPanel()
