@@ -14,18 +14,20 @@ namespace Kira
         [SerializeField]
         private TextMeshProUGUI roundText;
 
-        private LevelManager levelManager;
+        private LevelManager m_LevelManager;
+        private SpeedUI m_SpeedUI;
 
         private void Start()
         {
-            levelManager = FindAnyObjectByType<LevelManager>();
-            LevelStats levelStats = levelManager.levelStats;
+            m_LevelManager = FindAnyObjectByType<LevelManager>();
+            m_SpeedUI = FindFirstObjectByType<SpeedUI>();
+            LevelStats levelStats = m_LevelManager.levelStats;
             levelStats.OnHealthChanged += OnHealthChanged;
             levelStats.OnGemsChanged += OnGemsChanged;
             levelStats.OnRoundCompleted += OnRoundCompleted;
 
-            healthText.text = levelManager.levelSettings.startHealth.ToString();
-            gemsText.text = levelManager.levelSettings.startGems.ToString();
+            healthText.text = m_LevelManager.levelSettings.startHealth.ToString();
+            gemsText.text = m_LevelManager.levelSettings.startGems.ToString();
         }
 
         private void OnHealthChanged(int damage, int curHealth)
@@ -45,8 +47,9 @@ namespace Kira
 
         public void OnStartGameClicked()
         {
-            levelManager.StartLevel();
+            m_LevelManager.StartLevel();
             startBtnPanel.HidePanel();
+            m_SpeedUI.UpdatePlayBtnSprite();
         }
     }
 }
