@@ -14,7 +14,7 @@ namespace Kira
             m_IsEnabled = m_CanvasGroup.alpha == 0f;
         }
 
-        public void ShowPanel()
+        public virtual void ShowPanel()
         {
             m_CanvasGroup.alpha = 1f;
             m_CanvasGroup.blocksRaycasts = true;
