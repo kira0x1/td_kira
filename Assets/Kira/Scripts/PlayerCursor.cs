@@ -20,7 +20,6 @@ namespace Kira
             GAME_OVER
         }
 
-
         private void Awake()
         {
             m_Cam = Camera.main;
@@ -28,9 +27,14 @@ namespace Kira
             towerPlacer = FindFirstObjectByType<TowerPlacer>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
             TowerSlotUI.towerSlotClicked += OnTowerSlotClicked;
+        }
+
+        private void OnDisable()
+        {
+            TowerSlotUI.towerSlotClicked -= OnTowerSlotClicked;
         }
 
         private void Update()

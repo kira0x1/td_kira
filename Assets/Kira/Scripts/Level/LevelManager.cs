@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Kira
 
         private int m_RoundsLength;
         private int m_EnemiesToSpawn;
-        private List<Tower> towersSpawned = new List<Tower>();
+        private List<Tower> m_TowersSpawned = new List<Tower>();
 
         public enum LevelState
         {
@@ -31,6 +32,9 @@ namespace Kira
 
         private static LevelState m_LevelState;
         public static LevelState CurrentState => m_LevelState;
+
+        public Action OnVictoryEvent;
+        public Action OnFailedEvent;
 
         private void Awake()
         {
@@ -111,12 +115,18 @@ namespace Kira
         private void RemoveHealth(int damage)
         {
             levelStats.RemoveHealth(damage);
+
+            if (levelStats.Health <= 0)
+            {
+                OnFailedEvent?.Invoke();
+                m_LevelState = LevelState.LEVEL_END;
+            }
         }
 
         public void SpawnTower(TowerData towerData, Vector3 spawnPos)
         {
             Tower tower = Instantiate(towerData.towerPrefab, spawnPos, Quaternion.identity);
-            towersSpawned.Add(tower);
+            m_TowersSpawned.Add(tower);
             levelStats.SpendGems(towerData.cost);
         }
 
@@ -124,6 +134,12 @@ namespace Kira
         {
             if (levelStats.Round + 1 >= m_RoundsLength)
             {
+                if (levelStats.Health > 0)
+                {
+                    m_LevelState = LevelState.LEVEL_END;
+                    OnVictoryEvent?.Invoke();
+                }
+
                 return;
             }
 
