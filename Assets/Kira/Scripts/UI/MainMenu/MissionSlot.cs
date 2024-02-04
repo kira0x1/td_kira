@@ -28,7 +28,7 @@ namespace Kira.Menu
 
         public void OnClick()
         {
-            SceneManager.LoadScene(m_Mission.SceneId);
+            LoadingManager.Instance.LoadScene(m_Mission.SceneId);
         }
     }
 }

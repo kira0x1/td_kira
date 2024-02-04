@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Kira
 {
@@ -13,9 +14,16 @@ namespace Kira
         private PanelUI startBtnPanel;
         [SerializeField]
         private TextMeshProUGUI roundText;
+        [SerializeField]
+        private Transform m_TowerSlotGridParent;
 
         private LevelManager m_LevelManager;
         private SpeedUI m_SpeedUI;
+
+        [SerializeField]
+        private TowerData[] m_TowerDatas;
+        [SerializeField]
+        private TowerSlotUI m_TowerSlotPrefab;
 
         private void Start()
         {
@@ -28,6 +36,12 @@ namespace Kira
 
             healthText.text = m_LevelManager.levelSettings.startHealth.ToString();
             gemsText.text = m_LevelManager.levelSettings.startGems.ToString();
+
+            foreach (TowerData towerData in m_TowerDatas)
+            {
+                var slot = Instantiate(m_TowerSlotPrefab, m_TowerSlotGridParent);
+                slot.SetTower(towerData);
+            }
         }
 
         private void OnHealthChanged(int damage, int curHealth)

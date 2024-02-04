@@ -11,12 +11,6 @@ namespace Kira
 
         public static Action<TowerData> towerSlotClicked;
 
-        private void Start()
-        {
-            //TODO: set from level ui
-            SetTower(towerData);
-        }
-
         public void SetTower(TowerData towerData)
         {
             iconImage.sprite = towerData.icon;

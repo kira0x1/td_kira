@@ -27,7 +27,7 @@ namespace Kira
         private PlacerState placerState;
         private static readonly int BaseMapCachedProp = Shader.PropertyToID("_BaseMap");
 
-        private void Start()
+        private void Awake()
         {
             m_LevelManager = FindFirstObjectByType<LevelManager>();
             m_CachedTransform = transform;
@@ -58,7 +58,13 @@ namespace Kira
         {
             m_TowerPlacing = tower;
             m_IsPlacerEnabled = true;
-            m_PlacerGraphic.SetActive(true);
+            if (m_PlacerGraphic != null)
+                m_PlacerGraphic.SetActive(true);
+            else
+            {
+                Debug.LogWarning("warning placer graphic null");
+            }
+
             HandlePlacerPos();
         }
 
